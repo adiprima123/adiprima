@@ -87,7 +87,7 @@ $koneksi = mysqli_connect("localhost", "root", "", "pkk");
    function ubah($data) {
       global $conn;
       //ambil dari data tiap elemen form
-      //ambil dari data tiap elemen from
+      //ambil dari data tiap elemen form
       $id = $data["id"];
       $nim = htmlspecialchars($data["nim"]);
       $nama = htmlspecialchars($data["nama"]);
