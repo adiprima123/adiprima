@@ -61,14 +61,63 @@ $koneksi = mysqli_connect("localhost", "root", "", "pkk");
       $ekstensiGambar = strtolower(end($ekstensiGambar));
       if (!in_array($ekstensiGambar, $ekstensiGambarValid)){
          echo "<script>
-         alert('yang anda upload bukan gambar');
+      alert('yang anda upload bukan gambar');
          </script>";
+      return false;
       }
 
-      //
-
+       //cek jika filenya ukurannya terlalu besar 
+      if ($ukuranfile > 1000000) {
+      echo "<script>
+      alert('gambar yang anda upload terlalu besar');
+         </script>";
+      return false;
    }
 
+   // lolos pengecekan, gambar siap diupload
+   //dan generate nama baru
+   $namaFileBaru = uniqid();
+   $namaFileBaru .= '.';
+   $namaFileBaru .= $ekstensiGambar;
+
+   move_upload_file($tmpName, 'img/' . $namaFileBaru);
+   return $namaFileBaru;
+   }
+
+   function ubah($data) {
+      global $conn;
+      //ambil dari data tiap elemen form
+      //ambil dari data tiap elemen from
+      $id = $data["id"];
+      $nim = htmlspecialchars($data["nim"]);
+      $nama = htmlspecialchars($data["nama"]);
+      $email = htmlspecialchars($data["email"]);
+      $jurusan = htmlspecialchars($data["jurusan"]);
+      $gambar = htmlspecialchars($data["gambar"]);
+
+      //cek apakah user pilih gambar baru atau tidak
+      $gambarLama = htmlspecialchars($data["gambarLama"]);
+      if ($_FLES['gambar']['error'] === 4) {
+         $gambar = $gambarLama;
+      }else{
+         $gambar = upload();
+      }
+
+      //query insert data
+      $query = "UPDATE siswa SET
+                  nim = '$nim',
+                  nama = '$nama',
+                  email = '$email',
+                  jurusan = '$jurusan',
+                  gambar = '$gambar'
+   
+                  WHERE id = $id
+                  ";
+      mysqli_query($koneksi,$query);
+
+      return mysqli_affected_rows($koneksi);
+
+}
 
 function hapus($id)
 {
@@ -87,4 +136,5 @@ function cari($keyword){
             ";
    return query($query);
 }
+
 ?>
